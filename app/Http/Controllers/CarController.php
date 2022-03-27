@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CarController extends Controller
 {
@@ -14,7 +15,7 @@ class CarController extends Controller
      */
     public function index()
     {
-        $cars = Car::latest()->get();
+        $cars = Car::latest()->paginate(10);
         return view('cars.index', compact('cars'));
     }
 
@@ -25,7 +26,7 @@ class CarController extends Controller
      */
     public function create()
     {
-        //
+        return view('cars.create');
     }
 
     /**
@@ -36,7 +37,23 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name'  =>  'required',
+            'plat'  =>  'required',
+            'description'  =>  'required',
+            'price'  =>  'required|integer',
+            // 'image'  =>  'required',
+            'status'  =>  'required',
+        ]);
+
+        if($request->file('image')){
+            $data['image'] = $request->file('image')->store('cars');
+            Storage::disk('public')->putFile('cars', $request->file('image'));
+        }
+
+        Car::create($data);
+
+        return redirect()->route('car.index')->with('success', 'Data mobil berhasil ditambahkan');
     }
 
     /**
@@ -79,8 +96,12 @@ class CarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Car $car)
     {
-        //
+        if($car->image){
+            Storage::delete('public/' . $car->image);
+        }
+        Car::destroy($car->id);
+        return redirect()->route('car.index')->with('success', 'Data mobil berhasil dihapus');
     }
 }

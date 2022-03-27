@@ -1,44 +1,90 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.main')
 
-
-    <div class="py-12">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <table class="table-fixed" width="100%" class="border-2">
-                        <thead>
-                            <tr>
-                                <th>Song</th>
-                                <th>Artist</th>
-                                <th>Year</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-                                <td>Malcolm Lockyer</td>
-                                <td>1961</td>
-                            </tr>
-                            <tr>
-                                <td>Witchy Woman</td>
-                                <td>The Eagles</td>
-                                <td>1972</td>
-                            </tr>
-                            <tr>
-                                <td>Shining Star</td>
-                                <td>Earth, Wind, and Fire</td>
-                                <td>1975</td>
-                            </tr>
-                        </tbody>
-                    </table>
+@section('content')
+<h1 class="mt-4">Dashboard</h1>
+<ol class="mb-4 breadcrumb">
+    <li class="breadcrumb-item active">Dashboard</li>
+</ol>
+<div class="d-flex">
+    <a href="{{ route('car.create') }}" class="btn btn-primary">Tambah Mobil</a>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">No</th>
+      <th scope="col">Nama</th>
+      <th scope="col">Image</th>
+      <th scope="col">Plat</th>
+      <th scope="col">Status</th>
+      <th scope="col">Harga</th>
+      <th scope="col">Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    @forelse($cars as $car)
+        <tr>
+            <th scope="row">{{ $loop->iteration }}</th>
+            <td>{{ $car->name }}</td>
+            <td><img src="{{ asset('storage/' . $car->image) }}" width="150" alt=""></td>
+            <td>{{ $car->plat }}</td>
+            <td>
+              @if($car->status == 1)
+              <span class="badge bg-success">Available</span>
+              @else
+              <span class="badge bg-danger">Not Available</span>
+              @endif
+            </td>
+            <td>{{ number_format($car->price, 2) }}</td>
+            <td>
+              <form class="d-inline" action="{{ route('car.destroy', $car->id) }}" method="POST">
+                @csrf
+                @method('delete')
+                <button class="btn btn-danger" onclick="return confirm('Hapus data mobil ini?')">Hapus</button>
+              </form>
+              <a href="{{ route('car.edit', $car->id) }}" class="btn btn-success">Edit</a>
+              <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detail{{ $car->id }}">
+                Detail
+              </button>
+              <!-- <a href="#" class="btn btn-info">Detail</a> -->
+            </td>
+            <!-- Modal -->
+            <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="detail{{ $car->id }}" tabindex="-1" aria-labelledby="detail{{ $car->id }}Label" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Nama : {{ $car->name }}</p>
+                    <p>Plat : {{ $car->plat }}</p>
+                    <p>Deskripsi : {{ $car->description }}</p>
+                    <p>Harga : {{ number_format($car->price, 2) }}</p>
+                    <p>Status : @if($car->status == 1)
+                    <span class="badge bg-success">Available</span>
+                    @else
+                    <span class="badge bg-danger">Not Available</span>
+                    @endif</p>
+                    <p>
+                      <img src="{{ asset('storage/' . $car->image) }}" width="400" alt="">
+                    </p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
                 </div>
+              </div>
             </div>
-        </div>
-    </div>
+        </tr>
 
-</x-app-layout>
+    @empty
+        <tr>
+            <td colspan="7" class="text-center">
+                Belum ada data
+            </td>
+        </tr>
+    @endforelse
+    {{ $cars->links() }}
+  </tbody>
+</table>
+@endsection
