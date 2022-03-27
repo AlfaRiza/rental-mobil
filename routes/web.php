@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\CarController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +24,8 @@ Route::get('/dashboard', function () {
     return view('dashboard.index');
 })->middleware(['auth'])->name('dashboard');
 
-Route::resource('/car', CarController::class);
+Route::middleware(['auth'])->resource('/car', CarController::class);
+Route::middleware(['auth'])->resource('/user', UserController::class);
+Route::middleware(['auth'])->resource('/transaction', TransactionController::class);
 
 require __DIR__.'/auth.php';
