@@ -36,24 +36,22 @@
                     Transaksi
                 </a>
                 <div class="sb-sidenav-menu-heading">Profile</div>
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="{{ route('profile') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
                     Profile
                 </a>
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="{{ route('change-password') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-key"></i></div>
                     Ganti Password
                 </a>
-                <a class="nav-link" href="charts.html">
-                    <div class="sb-nav-link-icon"><i class="fas fa-key"></i></div>
-                    Ganti Password
+                <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    Logout
                 </a>
-                <div class="d-flex justify-content-start">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="btn btn-secondary btn-large" type="submit"><i class="fas fa-key"></i> Logout</button>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
                 </form>
-                </div>
+
             </div>
         </div>
         <div class="sb-sidenav-footer">

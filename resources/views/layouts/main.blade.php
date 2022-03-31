@@ -10,6 +10,7 @@
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+        @stack('style')
     </head>
     <body class="sb-nav-fixed">
         @include('includes.navbar')
@@ -582,4 +583,5 @@
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
         <script src="{{ asset('js/datatables-simple-demo.js') }}"></script>
     </body>
+    @stack('script')
 </html>

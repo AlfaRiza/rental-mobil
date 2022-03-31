@@ -11,13 +11,13 @@ class Transaction extends Model
 
     protected $guarded = [];
 
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function cars()
+    public function car()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Car::class);
     }
 }

@@ -24,8 +24,10 @@ Route::get('/dashboard', function () {
     return view('dashboard.index');
 })->middleware(['auth'])->name('dashboard');
 
+// Route::get('/profile', )
 Route::middleware(['auth'])->resource('/car', CarController::class);
 Route::middleware(['auth'])->resource('/user', UserController::class);
+Route::post('transaction/{transaction:id}/status', [TransactionController::class, 'status'])->name('transaction.status');
 Route::middleware(['auth'])->resource('/transaction', TransactionController::class);
 
 require __DIR__.'/auth.php';
