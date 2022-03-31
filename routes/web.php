@@ -2,8 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransactionController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,14 +23,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard.index');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)->middleware(['auth'])->name('dashboard');
 
-// Route::get('/profile', )
+// profile
+Route::get('/profile', [ProfileController::class, 'profile'])->middleware(['auth'])->name('profile');
+Route::post('/profile', [ProfileController::class, 'change_profile'])->middleware(['auth'])->name('profile.change');
+
+// change password
+Route::get('/change-password', [ProfileController::class, 'password'])->middleware(['auth'])->name('change-password');
+Route::post('/change-password', [ProfileController::class, 'change_password'])->middleware(['auth'])->name('change-password.change');
+
 Route::middleware(['auth'])->resource('/car', CarController::class);
 Route::middleware(['auth'])->resource('/user', UserController::class);
-Route::post('transaction/{transaction:id}/status', [TransactionController::class, 'status'])->name('transaction.status');
+Route::post('transaction/{transaction:id}/status', [TransactionController::class, 'status'])->middleware(['auth'])->name('transaction.status');
 Route::middleware(['auth'])->resource('/transaction', TransactionController::class);
 
 require __DIR__.'/auth.php';
